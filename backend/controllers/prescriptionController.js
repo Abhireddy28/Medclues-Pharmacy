@@ -333,3 +333,32 @@ exports.completeDelivery = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateRiderLocation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { latitude, longitude, speed } = req.body;
+
+    const prescription = await Prescription.findById(id);
+    if (!prescription) return res.status(404).json({ message: 'Prescription not found' });
+
+    prescription.riderLatitude = latitude;
+    prescription.riderLongitude = longitude;
+    await prescription.save();
+
+    const io = req.app.get('socketio');
+    if (io) {
+      io.emit('riderLocationUpdate', {
+        prescriptionId: id,
+        latitude,
+        longitude,
+        speed: speed || 0
+      });
+    }
+
+    notifyMedCluesCore(prescription);
+    res.json({ success: true, message: 'Rider GPS updated', latitude, longitude });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

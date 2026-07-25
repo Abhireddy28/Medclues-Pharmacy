@@ -10,5 +10,6 @@ router.put('/:id/pack', protect, prescriptionController.packPrescription);
 router.post('/:id/dispatch', protect, prescriptionController.dispatchPrescription);
 router.post('/:id/complete-pickup', protect, prescriptionController.completePickup);
 router.post('/:id/complete-delivery', protect, prescriptionController.completeDelivery);
+router.put('/:id/rider-location', prescriptionController.updateRiderLocation);
 
 module.exports = router;

@@ -22,6 +22,7 @@ import HospitalIntegrations from './pages/pharmacy/HospitalIntegrations';
 import PrescriptionQueue from './pages/pharmacy/PrescriptionQueue';
 import Branches from './pages/pharmacy/Branches';
 import DeliveryModule from './pages/pharmacy/DeliveryModule';
+import RiderTripPage from './pages/pharmacy/RiderTripPage';
 
 // Distributor Pages
 import DistributorDashboard from './pages/distributor/Dashboard';
@@ -83,6 +84,7 @@ const AppContent: React.FC = () => {
         <Route path="/pharmacy/branches" element={<Branches />} />
         <Route path="/pharmacy/delivery" element={<DeliveryModule />} />
         <Route path="/delivery/dashboard" element={<DeliveryModule />} />
+        <Route path="/delivery/trip/*" element={<RiderTripPage />} />
 
         {/* Distributor Routes */}
         <Route path="/distributor/dashboard" element={<DistributorDashboard />} />

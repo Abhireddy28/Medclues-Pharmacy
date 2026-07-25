@@ -120,6 +120,22 @@ const emailService = {
   sendRegistrationPendingEmail: async (user) => {
     const html = getRegistrationPendingTemplate(user.name, user.role);
     return sendEmail(user.email, 'Application Received - PharmaSync', html);
+  },
+
+  sendRiderTripDispatch: async (riderEmail, riderName, orderId, tripLink, patientAddress) => {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+        <h2 style="color: #0284c7;">🛵 New Medicine Delivery Assigned</h2>
+        <p>Hello <strong>${riderName}</strong>,</p>
+        <p>You have been assigned to deliver Medicine Order <strong>#${orderId}</strong>.</p>
+        <p><strong>Delivery Destination:</strong> ${patientAddress || 'Patient Address'}</p>
+        <div style="margin: 20px 0;">
+          <a href="${tripLink}" style="background-color: #0284c7; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">🚀 START TRIP & STREAM GPS</a>
+        </div>
+        <p style="font-size: 12px; color: #64748b;">Clicking the button will open your rider mobile interface to start navigation and enter doorstep OTP upon arrival.</p>
+      </div>
+    `;
+    return sendEmail(riderEmail, `🚀 New Medicine Delivery Assigned - Order #${orderId}`, html);
   }
 };
 
