@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Primary */
+  --primary:        #059669;
+  --primary-light:  #D1FAE5;
+
+  /* Secondary & Accent */
+  --secondary:      #0EA5E9;
+  --accent:         #F59E0B;
+
+  /* Status */
+  --success:        #10B981;
+  --warning:        #F59E0B;
+  --danger:         #EF4444;
+
+  /* Sidebar */
+  --sidebar:        #0F172A;
+  --sidebar-hover:  #1E293B;
+  --sidebar-active: #059669;
+
+  /* Surface */
+  --background:     #F8FAFC;
+  --card:           #FFFFFF;
+  --border:         #E2E8F0;
+
+  /* Text */
+  --text-primary:   #0F172A;
+  --text-secondary: #64748B;
+  --text-light:     #94A3B8;
+
+  /* Status Colors */
+  --status-received:        #2563EB;
+  --status-verification:    #F59E0B;
+  --status-packed:          #7C3AED;
+  --status-out-for-delivery:#EC4899;
+  --status-delivered:       #10B981;
+  --status-cancelled:       #EF4444;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Card ───────────────────────────────────────────────────── */
+.pharma-card {
+  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+.dashboard-card {
+  @apply bg-white p-6 rounded-[18px] border border-slate-200 hover:shadow-lg transition-shadow;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  @apply px-4 py-2 rounded-xl font-semibold text-sm hover:opacity-90 transition-all active:scale-95;
+}
+
+.btn-secondary {
+  background: var(--border);
+  color: var(--text-primary);
+  @apply px-4 py-2 rounded-xl font-semibold text-sm hover:bg-slate-300 transition-all active:scale-95;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+  @apply px-4 py-2 rounded-xl font-semibold text-sm hover:opacity-90 transition-all active:scale-95;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────────── */
+.sidebar-item {
+  @apply flex items-center space-x-3 p-3 rounded-xl cursor-pointer transition-all font-medium text-sm;
+  color: #E2E8F0;
+}
+
+.sidebar-item:hover {
+  background: var(--sidebar-hover);
+  color: white;
+}
+
+.sidebar-item.active {
+  background: var(--sidebar-active);
+  color: white;
+}
+
+/* ─── Status Badges ──────────────────────────────────────────── */
+.badge-received        { background: #EFF6FF; color: var(--status-received);        border: 1px solid #BFDBFE; }
+.badge-verification    { background: #FFFBEB; color: var(--status-verification);    border: 1px solid #FDE68A; }
+.badge-packed          { background: #F5F3FF; color: var(--status-packed);          border: 1px solid #DDD6FE; }
+.badge-out-for-delivery{ background: #FDF2F8; color: var(--status-out-for-delivery);border: 1px solid #FBCFE8; }
+.badge-delivered       { background: #ECFDF5; color: var(--status-delivered);       border: 1px solid #A7F3D0; }
+.badge-cancelled       { background: #FEF2F2; color: var(--status-cancelled);       border: 1px solid #FECACA; }
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+/* ─── Table ──────────────────────────────────────────────────── */
+.pharma-table th {
+  @apply text-[10px] font-bold uppercase tracking-widest text-slate-400 py-3 px-4 text-left bg-slate-50;
+}
+
+.pharma-table td {
+  @apply text-sm py-3 px-4 border-b border-slate-50 text-slate-700;
+}
