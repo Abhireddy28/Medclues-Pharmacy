@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
 
   const pharmacyLinks = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/pharmacy/dashboard' },
+    { name: 'Hospital Counter & Pickup', icon: Building, path: '/pharmacy/hospital-counter' },
     { name: 'Prescription Queue', icon: ClipboardList, path: '/pharmacy/prescriptions' },
     { name: 'Online Mobile Orders', icon: PackageCheck, path: '/pharmacy/orders' },
     { name: 'Billing / POS', icon: CreditCard, path: '/pharmacy/billing' },
@@ -53,6 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
 
   const adminLinks = [
     { name: 'System Overview', icon: LayoutDashboard, path: '/admin/dashboard' },
+    { name: 'Master Drug Catalog', icon: Package, path: '/admin/master-catalog' },
     { name: 'Active Pharmacies', icon: Building, path: '/admin/pharmacies' },
     { name: 'Hospital Network', icon: Network, path: '/admin/hospitals' },
     { name: 'Distributor Master', icon: ShieldCheck, path: '/admin/distributors' },

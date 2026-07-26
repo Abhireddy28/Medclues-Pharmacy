@@ -117,16 +117,24 @@ exports.deleteStock = async (req, res) => {
 
 exports.getInventory = async (req, res) => {
   try {
-    // Improved Audit fix: Ensure all old records have costPrice populated from price if they are 0
-    const itemsWithoutCost = await Inventory.find({ costPrice: { $in: [0, null] } });
-    for (let item of itemsWithoutCost) {
-      if (item.price) {
-        item.costPrice = item.price;
-        await item.save();
-      }
+    const { query, search } = req.query;
+    const searchTerm = query || search;
+    let filter = {};
+
+    if (searchTerm && searchTerm.trim() !== '') {
+      const regex = new RegExp(searchTerm.trim(), 'i');
+      filter = {
+        $or: [
+          { name: regex },
+          { composition: regex },
+          { salt: regex },
+          { brand: regex },
+          { category: regex }
+        ]
+      };
     }
 
-    const items = await Inventory.find().sort({ lastUpdated: -1 });
+    const items = await Inventory.find(filter).sort({ lastUpdated: -1 });
     res.json(items);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -273,24 +281,32 @@ exports.bulkUploadInventory = async (req, res) => {
       // Extract values flexibly
       const name = extractVal(row, ['Medicine Name', 'Medicine N', 'Medicine', 'Name', 'Product Name', 'Drug Name']);
       const composition = extractVal(row, ['Composition', 'Compositio', 'Generic Name', 'Formula']);
+      const salt = extractVal(row, ['Salt', 'Salt Composition', 'Composition', 'Generic Name']) || composition;
       const manufacturer = extractVal(row, ['Manufacturer', 'Manufactu', 'Company', 'Brand']);
-      const dosageForm = extractVal(row, ['Dosage Form', 'Dosage Fo', 'Category', 'Type']) || 'Tablet';
+      const brand = extractVal(row, ['Brand', 'Brand Name', 'Manufacturer', 'Company']) || manufacturer;
+      const dosageForm = extractVal(row, ['Dosage Form', 'Category', 'Type']) || 'General';
+      const category = extractVal(row, ['Category', 'Dosage Form', 'Type']) || dosageForm;
       const strength = extractVal(row, ['Strength', 'Dose']);
+      const hsnCode = extractVal(row, ['HSN Code', 'HSN']) || '30049099';
+      const rxRaw = extractVal(row, ['Prescription Required', 'Requires Rx', 'Rx Required', 'Rx']);
+      const requiresRx = String(rxRaw).toLowerCase() === 'true' || String(rxRaw).toLowerCase() === 'yes' || String(rxRaw) === '1';
       
       const batchNumber = extractVal(row, ['Batch Number', 'Batch', 'Batch No']) || `BATCH-${String(i + 1).padStart(3, '0')}`;
       const stockRaw = extractVal(row, ['Stock', 'Quantity', 'Qty']);
       const stock = stockRaw ? Number(stockRaw) : 50;
 
-      const mrpRaw = extractVal(row, ['MRP', 'Price', 'Selling Price']);
-      const mrp = mrpRaw ? Number(mrpRaw) : 0;
+      const mrpRaw = extractVal(row, ['MRP', 'Max Retail Price']);
+      const priceRaw = extractVal(row, ['Price', 'Selling Price', 'Rate']);
+      const mrp = mrpRaw ? Number(mrpRaw) : (priceRaw ? Number(priceRaw) * 1.2 : 50);
+      const price = priceRaw ? Number(priceRaw) : (mrp > 0 ? mrp : 40);
 
       const costRaw = extractVal(row, ['Buying Price', 'Cost Price', 'BP', 'Cost']);
-      const costPrice = costRaw ? Number(costRaw) : (mrp > 0 ? mrp : 10);
+      const costPrice = costRaw ? Number(costRaw) : (price * 0.75);
 
       const expiryRaw = extractVal(row, ['Expiry Date', 'Expiry', 'Exp Date']);
       const distributor = extractVal(row, ['Distributor', 'Supplier']) || manufacturer || 'General Wholesaler';
       const barcode = extractVal(row, ['Barcode', 'EAN', 'UPC']) || undefined;
-      const imageUrl = extractVal(row, ['Image URL', 'Image', 'Photo', 'Picture']) || undefined;
+      const imageUrl = extractVal(row, ['Image URL', 'Image', 'Photo', 'Picture']) || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300';
 
       // Fallback if name missing
       let finalName = name;
@@ -316,9 +332,15 @@ exports.bulkUploadInventory = async (req, res) => {
       // Add to bulk inventory insert list (Guarantees every row in Excel becomes an entry in DB!)
       newInventoryDocs.push({
         name: finalName,
-        stock: stock,
-        price: mrp,
+        salt: salt || 'Generic Salt Composition',
+        brand: brand || 'Pharma Brand',
+        category: category,
+        mrp: mrp,
+        price: price,
         costPrice: costPrice,
+        hsnCode: hsnCode,
+        requiresRx: requiresRx,
+        stock: stock,
         expiryDate: expiryDate,
         batchNumber: batchNumber,
         barcode: barcode,

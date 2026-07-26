@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
+import PharmacyMasterCatalog from './pages/admin/PharmacyMasterCatalog';
 
 // Pharmacy Pages
 import PharmacyDashboard from './pages/pharmacy/Dashboard';
@@ -23,6 +24,7 @@ import PrescriptionQueue from './pages/pharmacy/PrescriptionQueue';
 import Branches from './pages/pharmacy/Branches';
 import DeliveryModule from './pages/pharmacy/DeliveryModule';
 import RiderTripPage from './pages/pharmacy/RiderTripPage';
+import HospitalPharmacyCounter from './pages/pharmacy/HospitalPharmacyCounter';
 
 // Distributor Pages
 import DistributorDashboard from './pages/distributor/Dashboard';
@@ -58,6 +60,7 @@ const AppContent: React.FC = () => {
       <Route element={<Layout />}>
         {/* Admin Routes */}
         <Route path="/admin/dashboard" element={<AdminDashboard activeTab="dashboard" />} />
+        <Route path="/admin/master-catalog" element={<PharmacyMasterCatalog />} />
         <Route path="/admin/approvals" element={<AdminDashboard activeTab="approvals" />} />
         <Route path="/admin/pharmacies" element={<AdminDashboard activeTab="pharmacies" />} />
         <Route path="/admin/hospitals" element={<AdminDashboard activeTab="hospitals" />} />
@@ -66,7 +69,9 @@ const AppContent: React.FC = () => {
 
         {/* Pharmacy Routes */}
         <Route path="/pharmacy/dashboard" element={<PharmacyDashboard />} />
+        <Route path="/pharmacy/hospital-counter" element={<HospitalPharmacyCounter />} />
         <Route path="/pharmacy/billing" element={<Billing />} />
+
         <Route path="/pharmacy/discover" element={<DiscoverDistributors />} />
         <Route path="/pharmacy/suppliers" element={<DiscoverDistributors />} />
         <Route path="/pharmacy/connections" element={<Connections />} />

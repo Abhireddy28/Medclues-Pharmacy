@@ -290,15 +290,16 @@ exports.searchCatalog = async (req, res) => {
     const medicines = items.map(item => ({
       id: item._id,
       name: item.name,
+      salt: item.salt || 'Generic Salt Composition',
       brand: item.brand || 'Pharma',
       category: item.category || 'General',
       price: item.price || item.costPrice || 50.00,
-      mrp: Math.round((item.price || item.costPrice || 50.00) * 1.2 * 100) / 100,
+      mrp: item.mrp || Math.round((item.price || item.costPrice || 50.00) * 1.2 * 100) / 100,
       discount: '15% OFF',
       stock: item.stock,
       requiresRx: item.requiresRx || false,
       branch: item.branchId ? item.branchId.name : 'Hospital In-House Pharmacy',
-      image: item.image || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300'
+      image: item.image || ''
     }));
 
     res.json({ success: true, count: medicines.length, data: medicines });

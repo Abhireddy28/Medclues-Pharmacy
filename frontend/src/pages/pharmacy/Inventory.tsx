@@ -115,6 +115,18 @@ const Inventory: React.FC = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [formData, setFormData] = useState<any>({
+    name: '',
+    stock: '',
+    price: '',
+    costPrice: '',
+    distributor: '',
+    batchNumber: '',
+    expiryDate: '',
+    barcode: '',
+    image: ''
+  });
 
   // Layout View Mode (Table vs Container Cards)
   const [viewMode, setViewMode] = useState<'TABLE' | 'GRID'>('TABLE');
@@ -252,9 +264,9 @@ const Inventory: React.FC = () => {
             ctx.drawImage(img, 0, 0, width, height);
             const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
             if (isEditMode) {
-              setEditItemData(prev => ({ ...prev, image: compressedDataUrl }));
+              setEditItemData((prev: any) => ({ ...prev, image: compressedDataUrl }));
             } else {
-              setFormData(prev => ({ ...prev, image: compressedDataUrl }));
+              setFormData((prev: any) => ({ ...prev, image: compressedDataUrl }));
             }
           }
         };
@@ -422,14 +434,14 @@ const Inventory: React.FC = () => {
   const handleBarcodeSearch = async (code: string) => {
      try {
        setIsScanning(false);
-       setFormData(prev => ({ ...prev, barcode: code }));
+       setFormData((prev: any) => ({ ...prev, barcode: code }));
        // Attempt to fetch name from existing product catalog
        const { data } = await axios.get(`${getBaseUrl()}/api/products/barcode/${code}`, {
          headers: { Authorization: `Bearer ${localStorage.getItem('pharma_token')}` }
        });
        const product = Array.isArray(data) ? data[0] : data;
        if (product && product.name) {
-         setFormData(prev => ({ ...prev, name: product.name }));
+         setFormData((prev: any) => ({ ...prev, name: product.name }));
          alert(`Found: ${product.name}! Expiry must be typed manually.`);
        }
      } catch (err) {

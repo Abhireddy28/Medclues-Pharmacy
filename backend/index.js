@@ -34,6 +34,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Connect to database
 connectDB();
 
+// Start Background Worker Registry (Lock cleanup, Payment Reconciler, Inventory Expiry)
+const { startBackgroundWorkers } = require('./workers/backgroundWorkerRegistry');
+startBackgroundWorkers();
+
 // Define Routes
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -71,6 +75,10 @@ app.use('/api/branches', branchRoutes);
 app.use('/api/hospitals', hospitalRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/integration', integrationRoutes);
+
+// Legacy/Direct Patient Mobile App Alias Endpoints
+const integrationController = require('./controllers/integrationController');
+app.get('/api/user/pharmacy/search', integrationController.searchCatalog);
 
 // Socket.io Stats Helper
 const getLiveStats = async () => {
