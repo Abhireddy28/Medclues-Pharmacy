@@ -7,8 +7,14 @@ export const RiderTripPage: React.FC = () => {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [otp, setOtp] = useState<string>('');
   const [message, setMessage] = useState<string>('');
-  const [patientName, setPatientName] = useState<string>('Rajesh Kumar');
-  const [address, setAddress] = useState<string>('Door No 4-12, Ring Road, Guntur');
+  const [patientName] = useState<string>('Rajesh Kumar');
+  const [address] = useState<string>('Door No 4-12, Ring Road, Guntur');
+
+  const getBackendUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+    const hostname = window.location.hostname;
+    return `http://${hostname === 'localhost' ? '127.0.0.1' : hostname}:5001`;
+  };
 
   useEffect(() => {
     // Extract order ID from URL params or default
@@ -25,20 +31,6 @@ export const RiderTripPage: React.FC = () => {
 
     if ('geolocation' in navigator) {
       navigator.geolocation.watchPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setCoords({ lat, lng });
-
-          const getBackendUrl = () => {
-    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-    const hostname = window.location.hostname;
-    return `http://${hostname === 'localhost' ? '127.0.0.1' : hostname}:5001`;
-  };
-
-  const startTracking = () => {
-    if ('geolocation' in navigator) {
-      watchId = navigator.geolocation.watchPosition(
         (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
