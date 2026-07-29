@@ -30,8 +30,22 @@ export const RiderTripPage: React.FC = () => {
           const lng = position.coords.longitude;
           setCoords({ lat, lng });
 
+          const getBackendUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
+    return `http://${hostname === 'localhost' ? '127.0.0.1' : hostname}:5001`;
+  };
+
+  const startTracking = () => {
+    if ('geolocation' in navigator) {
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setCoords({ lat, lng });
+
           // Send live GPS update to Express Backend
-          axios.put(`http://localhost:5001/api/prescriptions/${orderId}/rider-location`, {
+          axios.put(`${getBackendUrl()}/api/prescriptions/${orderId}/rider-location`, {
             latitude: lat,
             longitude: lng,
             speed: position.coords.speed || 0
@@ -44,7 +58,7 @@ export const RiderTripPage: React.FC = () => {
           const mockLng = 80.4365 + (Math.random() * 0.005);
           setCoords({ lat: mockLat, lng: mockLng });
 
-          axios.put(`http://localhost:5001/api/prescriptions/${orderId}/rider-location`, {
+          axios.put(`${getBackendUrl()}/api/prescriptions/${orderId}/rider-location`, {
             latitude: mockLat,
             longitude: mockLng,
             speed: 25
@@ -63,7 +77,7 @@ export const RiderTripPage: React.FC = () => {
     }
 
     try {
-      await axios.post(`http://localhost:5001/api/prescriptions/${orderId}/complete-delivery`, {
+      await axios.post(`${getBackendUrl()}/api/prescriptions/${orderId}/complete-delivery`, {
         otp: otp
       });
       setStatus('completed');

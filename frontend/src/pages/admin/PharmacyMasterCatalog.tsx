@@ -110,7 +110,9 @@ const PharmacyMasterCatalog: React.FC = () => {
   const categories = ['All', 'Fever & Pain', 'Diabetes', 'Blood Pressure', 'Vitamins & Supplements', 'Stomach Care', 'Antibiotics', 'Allergy & Asthma'];
 
   const getBackendUrl = () => {
-    return 'http://localhost:5001';
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+    const hostname = window.location.hostname;
+    return `http://${hostname === 'localhost' ? '127.0.0.1' : hostname}:5001`;
   };
 
   const fetchCatalogFromDB = async () => {

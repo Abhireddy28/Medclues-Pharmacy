@@ -69,7 +69,11 @@ const HospitalPharmacyCounter: React.FC = () => {
   // Inventory Search & Edit
   const [invSearch, setInvSearch] = useState('');
 
-  const getBackendUrl = () => 'http://localhost:5001';
+  const getBackendUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
+    return `http://${hostname === 'localhost' ? '127.0.0.1' : hostname}:5001`;
+  };
 
   const fetchInventoryFromDB = async () => {
     setLoading(true);

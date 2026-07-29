@@ -7,6 +7,7 @@ const Orders: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const getBaseUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
     const hostname = window.location.hostname;
     return `http://${hostname === 'localhost' ? '127.0.0.1' : hostname}:5001`;
   };
